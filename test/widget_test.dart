@@ -1,30 +1,33 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:counter_app/main.dart';
-
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('finds a Text widget', (tester) async {
+    // 文字'H'を表示するテキスト・ウィジェットを持つアプリを作る。
+    await tester.pumpWidget(const MaterialApp(home: Scaffold(body: Text('H'))));
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // 文字'H'を表示するウィジェットを探す。
+    expect(find.text('H'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets('finds a widget using a Key', (tester) async {
+    // テスト・キーを定義する。
+    const testKey = Key('K');
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // testKey で MaterialApp をビルドします。
+    await tester.pumpWidget(MaterialApp(key: testKey, home: Container()));
+
+    // testKeyを使用してMaterialAppウィジェットを検索します。
+    expect(find.byKey(testKey), findsOneWidget);
+  });
+
+  testWidgets('finds a specific instance', (tester) async {
+    const childWidget = Padding(padding: EdgeInsets.zero);
+
+    //コンテナに子ウィジェットを提供します。
+    await tester.pumpWidget(Container(child: childWidget));
+
+    // ツリー内で子ウィジェットを検索し、存在することを確認する。
+    expect(find.byWidget(childWidget), findsOneWidget);
   });
 }
